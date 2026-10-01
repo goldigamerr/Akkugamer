@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Free Diamond - Video Portal</title>
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      width: 100%;
+      min-height: 100%;
+    }
+
+    body {
+      background: #000;
+      color: #fff;
+      font-family: "Segoe UI", Arial, sans-serif;
+      overflow-x: hidden;
+    }
+
+    header {
+      width: 100%;
+      padding: 18px 20px;
+      text-align: center;
+      background: linear-gradient(135deg, #87CEEB, #5FB9E0);
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    }
+
+    header h1 {
+      font-size: 28px;
+      font-weight: 700;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+    }
+
+    .container {
+      width: 100%;
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    .video-section {
+      margin: 30px 0 45px;
+      text-align: center;
+    }
+
+    .video-section h2 {
+      font-size: 26px;
+      font-weight: 700;
+      margin-bottom: 20px;
+      letter-spacing: 1px;
+    }
+
+    .video-container {
+      width: 100%;
+      max-width: 800px;
+      aspect-ratio: 16 / 9;
+      margin: 0 auto;
+      position: relative;
+      overflow: hidden;
+      background: #171717;
+      border-radius: 15px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    }
+
+    .video-container video {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      display: block;
+      object-fit: cover;
+      background: #171717;
+    }
+
+    .play-overlay {
+      position: absolute;
+      inset: 0;
+      z-index: 10;
+
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+
+      cursor: pointer;
+      user-select: none;
+      touch-action: manipulation;
+
+      background: rgba(0, 0, 0, 0.40);
+    }
+
+    .play-button {
+      width: 82px;
+      height: 82px;
+      border-radius: 50%;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      padding-left: 5px;
+
+      background: rgba(0, 0, 0, 0.72);
+
+      font-size: 38px;
+
+      box-shadow: 0 5px 25px rgba(0, 0, 0, 0.5);
+
+      transition: 0.15s ease;
+    }
+
+    .play-overlay:hover .play-button {
+      transform: scale(1.08);
+      background: rgba(0, 0, 0, 0.88);
+    }
+
+    .play-overlay:active .play-button {
+      transform: scale(0.95);
+    }
+
+    .play-text {
+      margin-top: 15px;
+      padding: 8px 18px;
+
+      border-radius: 20px;
+
+      background: rgba(0, 0, 0, 0.78);
+
+      font-size: 13px;
+    }
+
+    .app-card {
+      width: 95%;
+      max-width: 520px;
+
+      margin: 0 auto 50px;
+      padding: 20px;
+
+      position: relative;
+      z-index: 1;
+
+      border-radius: 18px;
+
+      background: linear-gradient(
+        180deg,
+        #141414,
+        #0b0b0b
+      );
+
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.8);
+    }
+
+    .app-card::before {
+      content: "";
+
+      position: absolute;
+      inset: -3px;
+
+      border-radius: 18px;
+      padding: 3px;
+
+      background: linear-gradient(
+        90deg,
+        #ff0000,
+        #ff7f00,
+        #ffff00,
+        #00ff00,
+        #00ffff,
+        #0000ff,
+        #8b00ff
+      );
+
+      -webkit-mask:
+        linear-gradient(#fff 0 0) content-box,
+        linear-gradient(#fff 0 0);
+
+      -webkit-mask-composite: xor;
+
+      mask:
+        linear-gradient(#fff 0 0) content-box,
+        linear-gradient(#fff 0 0);
+
+      mask-composite: exclude;
+
+      z-index: -1;
+    }
+
+    .app-info {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .app-icon {
+      width: 80px;
+      height: 80px;
+      flex-shrink: 0;
+
+      border-radius: 14px;
+      object-fit: cover;
+    }
+
+    .text {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .tags {
+      display: flex;
+      gap: 6px;
+      margin-bottom: 6px;
+    }
+
+    .tag {
+      padding: 4px 10px;
+      border-radius: 12px;
+
+      font-size: 11px;
+      font-weight: 600;
+    }
+
+    .tag.new {
+      background: #ff3b3b;
+    }
+
+    .tag.premium {
+      background: #6a5cff;
+    }
+
+    .text h3 {
+      margin: 6px 0;
+
+      font-size: 20px;
+      font-weight: 600;
+    }
+
+    .text p {
+      margin: 4px 0;
+
+      color: #bdbdbd;
+
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .stars {
+      margin-top: 6px;
+
+      color: #ffcc00;
+
+      font-size: 16px;
+      letter-spacing: 1px;
+    }
+
+    .install-btn {
+      width: 100%;
+
+      display: block;
+
+      margin-top: 20px;
+      padding: 16px;
+
+      border: 0;
+      border-radius: 35px;
+
+      color: #fff;
+
+      background: linear-gradient(
+        90deg,
+        #00ff88,
+        #00cc6a
+      );
+
+      box-shadow:
+        0 8px 25px rgba(0, 255, 136, 0.4);
+
+      font-size: 18px;
+      font-weight: 600;
+      text-align: center;
+      text-decoration: none;
+
+      cursor: pointer;
+
+      transition: 0.3s;
+    }
+
+    .install-btn:hover {
+      transform: translateY(-2px);
+
+      box-shadow:
+        0 12px 30px rgba(0, 255, 136, 0.6);
+    }
+
+    .footer-note {
+      max-width: 520px;
+      margin: -25px auto 40px;
+
+      color: #888;
+
+      font-size: 11px;
+      line-height: 1.5;
+      text-align: center;
+    }
+
+    @media (max-width: 600px) {
+
+      header h1 {
+        font-size: 22px;
+      }
+
+      .video-section h2 {
+        font-size: 20px;
+      }
+
+      .app-icon {
+        width: 64px;
+        height: 64px;
+      }
+
+      .text h3 {
+        font-size: 18px;
+      }
+
+      .text p {
+        font-size: 12px;
+      }
+
+      .install-btn {
+        padding: 14px;
+        font-size: 16px;
+      }
+
+      .play-button {
+        width: 70px;
+        height: 70px;
+        font-size: 32px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <header>
+    <h1>Free Diamond</h1>
+  </header>
+
+  <main class="container">
+
+    <section class="video-section">
+
+      <h2>WATCH FULL VIDEO</h2>
+
+      <div class="video-container">
+
+        <video
+          id="mainVideo"
+          playsinline
+          preload="metadata"
+          controls
+        >
+          <source
+            src="https://videotourl.com/videos/1787381079259-5b57c6a9-e7a2-4571-93f6-b77f6d1b4c69.mp4"
+            type="video/mp4"
+          >
+
+          Your browser does not support HTML5 video.
+        </video>
+
+        <div
+          id="playOverlay"
+          class="play-overlay"
+        >
+
+          <div class="play-button">
+            ▶
+          </div>
+
+          <div class="play-text">
+            Tap to Play with Sound
+          </div>
+
+        </div>
+
+      </div>
+
+    </section>
+
+    <section class="app-card">
+
+      <div class="app-info">
+
+        <img
+          src="https://videotourl.com/images/1787391304049-80a774b1-b784-420c-8e99-99822a3842a5.png"
+          alt="Free Diamond"
+          class="app-icon"
+        >
+
+        <div class="text">
+
+          <div class="tags">
+
+            <span class="tag new">
+              NEW
+            </span>
+
+            <span class="tag premium">
+              PREMIUM
+            </span>
+
+          </div>
+
+          <h3>
+            Free Diamond
+          </h3>
+
+          <p>
+            FREE DIAMOND
+            <br>
+            APPLICATION
+          </p>
+
+          <div class="stars">
+            ★★★★★
+          </div>
+
+        </div>
+
+      </div>
+
+      <a
+        class="install-btn"
+        href="https://1024terabox.com/s/1wiN7utmcPbCd2tX9f5swXA"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        ⬇ APPLICATION ⬇
+      </a>
+
+    </section>
+
+    <div class="footer-note">
+      This website is an independent project and is not
+      affiliated with or endorsed by Garena.
+    </div>
+
+  </main>
+
+  <script>
+    const video = document.getElementById("mainVideo");
+    const overlay = document.getElementById("playOverlay");
+
+    overlay.addEventListener("click", function(event) {
+
+      event.preventDefault();
+      event.stopPropagation();
+
+      video.muted = false;
+
+      const request = video.play();
+
+      if (request !== undefined) {
+
+        request.then(function() {
+
+          overlay.style.display = "none";
+
+        }).catch(function(error) {
+
+          console.log(
+            "Playback with sound blocked:",
+            error
+          );
+
+          video.muted = true;
+
+          video.play().then(function() {
+
+            overlay.style.display = "none";
+
+          }).catch(function(error2) {
+
+            console.log(
+              "Video playback failed:",
+              error2
+            );
+
+          });
+
+        });
+
+      }
+
+    });
+
+    video.addEventListener("play", function() {
+      overlay.style.display = "none";
+    });
+
+    video.addEventListener("ended", function() {
+      overlay.style.display = "flex";
+    });
+  </script>
+
+</body>
+</html>
